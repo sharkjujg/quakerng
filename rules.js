@@ -1,6 +1,8 @@
 // QuakeRNG badge rules. Each rule is a deterministic predicate over known fields: a value the catalog does not have never matches.
 // test(m, poolDate) and evidence(m, poolDate) read the prepared member from prep().
 
+export const RULESET = '2'; // 2: common band badges added so no record earns nothing
+
 export const norm = (s) => s.normalize('NFKC').toLowerCase();
 
 const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
@@ -59,4 +61,9 @@ export const RULES = [
   { id: 'polar-reach', name: 'Polar Reach', family: 'Latitude', rule: 'Epicenter at 60 degrees latitude or beyond', test: (m) => m.lat !== null && Math.abs(m.lat) >= 60, evidence: (m) => `${at(m)} was at latitude ${m.lat}` },
   { id: 'date-line', name: 'Date Line', family: 'Longitude', rule: 'Epicenter within 5 degrees of the 180th meridian', test: (m) => m.lon !== null && Math.abs(m.lon) >= 175, evidence: (m) => `${at(m)} was at longitude ${m.lon}` },
   { id: 'named-quake', name: 'Named Quake', family: 'Naming', rule: 'The catalog gives the event a proper name', test: (m) => m.named, evidence: (m) => `The catalog names this event "${m.place}"` },
+  { id: 'magnitude-six', name: 'Magnitude Six', family: 'Magnitude', rule: 'Magnitude from 6.0 up to, but not including, 6.5', test: (m) => m.mag !== null && m.mag >= 6 && m.mag < 6.5, evidence: mag },
+  { id: 'crustal-depth', name: 'Crustal Depth', family: 'Depth', rule: 'Depth over 10 km and under 70 km', test: (m) => m.depth !== null && m.depth > 10 && m.depth < 70, evidence: dep },
+  { id: 'northern-hemisphere', name: 'Northern Hemisphere', family: 'Hemisphere', rule: 'Epicenter north of the equator', test: (m) => m.lat !== null && m.lat > 0, evidence: (m) => `${at(m)} was at latitude ${m.lat}` },
+  { id: 'eastern-hemisphere', name: 'Eastern Hemisphere', family: 'Longitude', rule: 'Epicenter east of the prime meridian', test: (m) => m.lon !== null && m.lon > 0, evidence: (m) => `${at(m)} was at longitude ${m.lon}` },
+  { id: 'western-hemisphere', name: 'Western Hemisphere', family: 'Longitude', rule: 'Epicenter west of the prime meridian', test: (m) => m.lon !== null && m.lon < 0, evidence: (m) => `${at(m)} was at longitude ${m.lon}` },
 ];

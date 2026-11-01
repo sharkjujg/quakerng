@@ -30,6 +30,11 @@ export const cases = [
   ['polar-reach', { lat: 60 }, true], ['polar-reach', { lat: -60 }, true], ['polar-reach', { lat: 59.9 }, false],
   ['date-line', { lon: 175 }, true], ['date-line', { lon: -175 }, true], ['date-line', { lon: 174.9 }, false], ['date-line', { lon: null }, false],
   ['named-quake', { place: '2004 Sumatra - Andaman Islands Earthquake' }, true], ['named-quake', { place: '10 km S of Somewhere, Country' }, false], ['named-quake', { place: undefined }, false],
+  ['magnitude-six', { mag: 6 }, true], ['magnitude-six', { mag: 6.49 }, true], ['magnitude-six', { mag: 6.5 }, false], ['magnitude-six', { mag: 5.9 }, false], ['magnitude-six', { mag: null }, false],
+  ['crustal-depth', { depth: 10.1 }, true], ['crustal-depth', { depth: 69.9 }, true], ['crustal-depth', { depth: 10 }, false], ['crustal-depth', { depth: 70 }, false], ['crustal-depth', { depth: null }, false],
+  ['northern-hemisphere', { lat: 0.1 }, true], ['northern-hemisphere', { lat: 0 }, false], ['northern-hemisphere', { lat: -1 }, false], ['northern-hemisphere', { lat: null }, false],
+  ['eastern-hemisphere', { lon: 0.1 }, true], ['eastern-hemisphere', { lon: 0 }, false], ['eastern-hemisphere', { lon: -8 }, false], ['eastern-hemisphere', { lon: null }, false],
+  ['western-hemisphere', { lon: -0.1 }, true], ['western-hemisphere', { lon: 0 }, false], ['western-hemisphere', { lon: 8 }, false], ['western-hemisphere', { lon: null }, false],
 ];
 
 export function poolChecks(raw, pool, ok) {
