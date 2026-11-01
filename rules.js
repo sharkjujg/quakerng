@@ -11,7 +11,7 @@ export function prep(raw) {
   const w = typeof raw.time === 'string' ? WHEN.exec(raw.time) : null;
   return {
     ...raw,
-    mag: pos(raw.mag), depth: num(raw.depth) !== null && raw.depth >= 0 ? raw.depth : null, lat: num(raw.lat), lon: num(raw.lon),
+    mag: pos(raw.mag), depth: num(raw.depth) !== null && raw.depth >= -10 ? raw.depth : null, // epicenters can sit a little above sea level, so small negative depths are real lat: num(raw.lat), lon: num(raw.lon),
     felt: pos(raw.felt), mmi: pos(raw.mmi), sig: pos(raw.sig),
     year: w ? +w[1] : null, month: w ? +w[2] : null, day: w ? +w[3] : null, hour: w ? +w[4] : null,
     pager: typeof raw.alert === 'string' ? norm(raw.alert) : null, // PAGER alert level

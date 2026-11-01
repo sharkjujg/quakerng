@@ -8,7 +8,7 @@ export const cases = [
   ['major-quake', { mag: 7 }, true], ['major-quake', { mag: 6.9 }, false],
   ['great-quake', { mag: 8 }, true], ['great-quake', { mag: 7.9 }, false],
   ['monster', { mag: 8.8 }, true], ['monster', { mag: 8.7 }, false],
-  ['shallow', { depth: 10 }, true], ['shallow', { depth: 10.1 }, false], ['shallow', { depth: 0 }, true], ['shallow', { depth: null }, false], ['shallow', { depth: -3 }, false],
+  ['shallow', { depth: 10 }, true], ['shallow', { depth: 10.1 }, false], ['shallow', { depth: 0 }, true], ['shallow', { depth: null }, false], ['shallow', { depth: -0.1 }, true], ['shallow', { depth: -11 }, false],
   ['intermediate', { depth: 70 }, true], ['intermediate', { depth: 69.9 }, false],
   ['deep-focus', { depth: 300 }, true], ['deep-focus', { depth: 299 }, false],
   ['very-deep', { depth: 600 }, true], ['very-deep', { depth: 599 }, false],
@@ -35,7 +35,7 @@ export const cases = [
 export function poolChecks(raw, pool, ok) {
   const ms = raw.members;
   ok('event ids are unique', new Set(ms.map((m) => m.id)).size === pool.n);
-  ok('every event has a UTC time, a magnitude of 6 or more, a depth, and a position', ms.every((m) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/.test(m.time) && m.mag >= 6 && m.depth >= -5 && Math.abs(m.lat) <= 90 && Math.abs(m.lon) <= 180));
+  ok('every event has a UTC time, a magnitude of 6 or more, a depth, and a position', ms.every((m) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/.test(m.time) && m.mag >= 6 && m.depth >= -10 && Math.abs(m.lat) <= 90 && Math.abs(m.lon) <= 180));
   ok('no event is dated before 1973 or after the capture date', ms.every((m) => m.time.slice(0, 4) >= '1973' && m.time.slice(0, 10) <= raw.meta.capturedAt));
   ok('events are in time order', ms.every((m, i) => i === 0 || m.time >= ms[i - 1].time));
   ok('unknown measurements are null, not zero or empty', ms.every((m) => ['felt', 'mmi', 'sig'].every((k) => m[k] === null || m[k] > 0)));

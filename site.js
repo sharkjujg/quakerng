@@ -26,7 +26,7 @@ export default {
     return [
       ['Year', m.time.slice(0, 4)], ['Decade', `${m.time.slice(0, 3)}0s`], ['Month', MONTHS[+m.time.slice(5, 7) - 1]], ['Weekday (UTC)', DAYS[d.getUTCDay()]],
       ['Magnitude', band(m.mag, [[6.5, '6.0 to 6.4'], [7, '6.5 to 6.9'], [7.5, '7.0 to 7.4'], [8, '7.5 to 7.9'], [Infinity, '8.0 or more']])],
-      ['Depth', band(m.depth, [[10.01, 'Up to 10 km'], [70, '10 to 70 km'], [300, '70 to 300 km'], [Infinity, 'Over 300 km']])],
+      ...(m.depth === null ? [] : [['Depth', band(m.depth, [[10.01, 'Up to 10 km'], [70, '10 to 70 km'], [300, '70 to 300 km'], [Infinity, 'Over 300 km']])]]),
       ['Hemisphere', m.lat < 0 ? 'Southern' : 'Northern'],
       ...(m.region ? [['Region', m.region]] : []),
       ...(m.tsunami ? [['Impact', 'Tsunami flagged']] : []),
@@ -34,7 +34,7 @@ export default {
     ];
   },
   facts: (m) => [
-    ['When', when(m)], ['Magnitude', `${m.mag.toFixed(1)}${m.magType ? ` (${m.magType})` : ''}`], ['Depth', `${fmt(m.depth)} km`],
+    ['When', when(m)], ['Magnitude', `${m.mag.toFixed(1)}${m.magType ? ` (${m.magType})` : ''}`], ['Depth', m.depth === null ? unknown : `${fmt(m.depth)} km`],
     ['Location', m.place || unknown], ['Coordinates', `${m.lat}°, ${m.lon}°`],
     ['Tsunami flag', m.tsunami ? 'Yes (a USGS flag, not a confirmed wave)' : 'No'],
     ['"Did You Feel It?" reports', m.felt ? fmt(m.felt) : 'none or unknown'],
@@ -44,7 +44,7 @@ export default {
   art(m) { // original seismogram: amplitude follows magnitude, color follows depth; it never affects scoring
     let h = hash(m.id);
     const rnd = () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) / 4294967296);
-    const amp = 6 + (m.mag - 6) * 11, hue = m.depth < 70 ? '#ff9d4d' : m.depth < 300 ? '#6ec7ff' : '#b58cff';
+    const d = m.depth ?? 10, amp = 6 + (m.mag - 6) * 11, hue = d < 70 ? '#ff9d4d' : d < 300 ? '#6ec7ff' : '#b58cff';
     const pts = Array.from({ length: 90 }, (_, i) => {
       const x = 5 + i * (90 / 89), t = i / 89, env = t < 0.28 ? 0.06 : amp * Math.exp(-(t - 0.28) * 4) * (t < 0.34 ? (t - 0.28) / 0.06 : 1);
       return `${x.toFixed(1)},${(50 + (rnd() - 0.5) * 2 * Math.max(1.2, env)).toFixed(1)}`;
